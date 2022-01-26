@@ -1,5 +1,4 @@
   body {
-    font: 14px "Century Gothic", Futura, sans-serif;
     margin: 20px;
   }
 
@@ -10,6 +9,16 @@
   .game {
     display: flex;
     justify-content: center;
+  }
+
+  
+  .game-info {
+    margin-left: 20px;
+
+    .game-status {
+      text-align: center;
+      font: bold 20px sans-serif;
+    }
   }
 
   .board-row {
@@ -31,12 +40,15 @@
     line-height: 70px;
 
     text-align: center;
-    font-size: 36px;
-    font-weight: bold;
+    font: bold 36px sans-serif;
 
     &:focus {
       outline: none;
     }
+  }
+
+  ol {
+    padding-left: 40px;
   }
 
 
