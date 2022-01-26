@@ -1,24 +1,22 @@
 import React from 'react';
-import Square from './Square';
+import { Square } from './Square';
 
-function Board(props) {
+export const Board = ({ squares, onClick }) => {
     const renderSquare = (i) => (
-        <Square key={i} value={props.squares[i]} onClick={() => props.onClick(i)}/>
+        <Square key={i} value={squares[i]} onClick={() => onClick(i)}/>
     );
 
     return (
-            <div>
-                {
-                    [...Array(3)].map((elem, i) => (
-                        <div key={i} className="board-row">
+        <div>
+            {
+                [...Array(3)].map((row, i) => (
+                    <div key={i} className="board-row">
                         {
-                            [...Array(3)].map((elem, j) => renderSquare(3 * i + j))
+                            [...Array(3)].map((item, j) => renderSquare(3 * i + j))
                         }
-                        </div>
-                    ))
-                }
-            </div>
-        )
+                    </div>
+                ))
+            }
+        </div>
+    )
 }
-
-export default Board;

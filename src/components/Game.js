@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Board from './Board';
-import calculateWinner from '../helper/calculateWinner';
+import { Board } from './Board';
+import { calculateWinner } from '../helper/calculateWinner';
 import '../index.scss';
 
 class Game extends Component {
@@ -11,26 +11,30 @@ class Game extends Component {
                 squares: Array(9).fill(null)
             }],
             stepNumber: 0,
+            winner: null,
             xIsNext: true
         }
     }
 
     handleClick(i){
-        const history = this.state.history.slice(0, this.state.stepNumber + 1);
-        const current = history[history.length - 1];
-        const squares = current.squares.slice();
+        const { winner, history, stepNumber, xIsNext } = this.state;
 
-        if (calculateWinner(squares) || squares[i]) {
+        if (winner) {
             return;
         }
-        squares[i] = this.state.xIsNext ? 'X' : 'O';
+
+        const historyShapshot = history.slice(0, stepNumber + 1);
+        const current = historyShapshot[historyShapshot.length - 1];
+        const squares = current.squares.slice();
+        squares[i] = xIsNext ? 'X' : 'O';
 
         this.setState({
-            history: history.concat([{
+            history: historyShapshot.concat([{
                 squares:squares,
             }]),
-            stepNumber: history.length,
-            xIsNext: !this.state.xIsNext,
+            stepNumber: historyShapshot.length,
+            winner: calculateWinner(squares),
+            xIsNext: !xIsNext,
         });
     }
 
@@ -42,13 +46,13 @@ class Game extends Component {
     }
 
     render() {
-        const history = this.state.history;
-        const current = history[this.state.stepNumber];
-        const winner = calculateWinner(current.squares);
+        const { winner, history, stepNumber, xIsNext } = this.state;
+        const current = history[stepNumber];
         const moves = history.map((step, move) => {
-            const desc = move ?
-                'Go to move #' + move :
-                'Go to game start';
+            const desc = move
+                ? `Go to move #${move}` 
+                : 'Go to game start';
+
             return (
                 <li key={move}>
                     <button onClick={() => this.jumpTo(move)}>{desc}</button>
@@ -56,11 +60,11 @@ class Game extends Component {
             );
         });
 
-        console.log(this.state.winner);
-
         const status = (winner) 
-            ? 'Winner: ' + winner
-            :  (this.state.stepNumber === 9) ? 'Game over draw' : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+            ? `Winner: ${winner}`
+            :  (stepNumber === 9)
+                ? 'Game over draw'
+                : 'Next player: ' + (xIsNext ? 'X' : 'O');
 
         return (
             <div className="game">
