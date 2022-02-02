@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Board } from './Board';
 import { calculateWinner } from '../helper/calculateWinner';
+import { useHistory } from '../helper/useHistory';
 import '../index.scss';
 
 export const Game = () => {
     const [xIsNext, setXIsNext] = useState(true);
     const [winner, setWinner] = useState(null);
-    const [stepNumber, setStepNumber] = useState(() => {
-        const stepNumberSaved = localStorage.getItem("stepNumber");
-        return JSON.parse(stepNumberSaved) || 0;
-    });
-    const [history, setHistory] = useState(() => {
-        const historySaved = localStorage.getItem("history");
-        return JSON.parse(historySaved) || [{ squares: Array(9).fill(null)}];
-    });
+    const [stepNumber, setStepNumber] = useState(0);
+    const {history, setHistory } = useHistory()
 
     useEffect(() => {
-        localStorage.setItem("stepNumber", JSON.stringify(stepNumber));
-        localStorage.setItem("history", JSON.stringify(history));
-    }, [stepNumber, history]);
+        const stepNumberSaved = localStorage.getItem("stepNumber");
+        stepNumberSaved && setStepNumber(JSON.parse(stepNumberSaved));
+
+    }, []);
 
     const current = history[stepNumber];
     const moves = history.map((step, move) => {
@@ -53,6 +49,9 @@ export const Game = () => {
         setStepNumber(historyShapshot.length);
         setWinner(calculateWinner(squares));
         setXIsNext(!xIsNext);
+
+        localStorage.setItem("stepNumber", JSON.stringify(stepNumber));
+        localStorage.setItem("history", JSON.stringify(history));
     }
 
     const jumpTo = (step) => {
@@ -65,7 +64,7 @@ export const Game = () => {
             <div className="game-board">
                 <Board
                     squares={current.squares}
-                    onClick={i => handleClick(i)}
+                    onClick={(i) => handleClick(i)}
                 />
             </div>
             <div className="game-info">
