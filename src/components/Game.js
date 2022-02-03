@@ -1,20 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Board } from './Board';
 import { calculateWinner } from '../helper/calculateWinner';
-import { useHistory } from '../helper/useHistory';
+import { useStepNumber, useHistory } from '../hooks/index';
 import '../index.scss';
 
 export const Game = () => {
     const [xIsNext, setXIsNext] = useState(true);
     const [winner, setWinner] = useState(null);
-    const [stepNumber, setStepNumber] = useState(0);
-    const {history, setHistory } = useHistory()
 
-    useEffect(() => {
-        const stepNumberSaved = localStorage.getItem("stepNumber");
-        stepNumberSaved && setStepNumber(JSON.parse(stepNumberSaved));
-
-    }, []);
+    const {history, setHistory} = useHistory();
+    const {stepNumber, setStepNumber} = useStepNumber();
 
     const current = history[stepNumber];
     const moves = history.map((step, move) => {
